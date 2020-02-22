@@ -5,16 +5,22 @@ import Maybe.Extra
 
 raindrops : Int -> String
 raindrops number =
-    number
-        |> fmap
-            [ check 2 "pling"
-            , check 5 "plang"
-            , check 7 "plong"
-            ]
-        |> Maybe.Extra.values
-        |> collapse
-            (String.join "")
-            (number |> String.fromInt)
+    let
+        results =
+            number
+                |> fmap
+                    [ check 2 "pling"
+                    , check 5 "plang"
+                    , check 7 "plong"
+                    ]
+                |> Maybe.Extra.values
+    in
+    case results of
+        [] ->
+            String.fromInt number
+
+        _ ->
+            results |> String.join ""
 
 
 check : Int -> a -> Int -> Maybe a
@@ -37,24 +43,3 @@ one value and several functions.
 fmap : List (a -> b) -> a -> List b
 fmap functions a =
     functions |> List.map (\func -> func a)
-
-
-{-| Turn a list of things into one thing, but use a default when the list is
-empty.
-
-    []
-        |> collapse (Html.div []) (Html.text "No items")
-        == Html.text "No items"
-
-    [ text "foo", text "bar" ]
-        |> collapse (Html.div []) (Html.text "No items")
-        == Html.div [] [ text "foo", text "bar" ]
-
--}
-collapse : (List a -> b) -> b -> List a -> b
-collapse collapser default list =
-    if list == [] then
-        default
-
-    else
-        list |> collapser

@@ -6,6 +6,7 @@ import Maybe.Extra
 raindrops : Int -> String
 raindrops number =
     let
+        results : List String
         results =
             number
                 |> fmap
